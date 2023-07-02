@@ -137,9 +137,9 @@ def main():
                         os.path.join(devsecops_dir, "pre-commit-hook-implementation.py"),
                         os.path.join(hooks_dir, "pre-commit")
                     )
-                os.chmod(os.path.join(hooks_dir, "pre-commit"), 0o755)
+                    os.chmod(os.path.join(hooks_dir, "pre-commit"), 0o755)
 
-                os.makedirs(devsecops_dir, exist_ok=True)
+                print("Installing proper binary..")
                 install_gitleaks(os_type=os_type, os_architecture=arch, destination_dir=devsecops_dir)
 
         # Here gitleaks is already installed and can be executed
