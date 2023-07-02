@@ -69,3 +69,6 @@ git commit -m "added secret"
 ```shell
 git config --bool devsecops.gitleaks.enabled false
 ```
+
+# Running Demo:
+[![asciicast](https://asciinema.org/a/nuXZ0C6QcRiXNTZbNoVNWDL2A.svg)](https://asciinema.org/a/nuXZ0C6QcRiXNTZbNoVNWDL2A?autoplay=1)
