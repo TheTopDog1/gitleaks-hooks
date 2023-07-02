@@ -130,15 +130,16 @@ def main():
                 print(f"Removing dir: {os.path.join(devsecops_dir, '.git')}")
                 shutil.rmtree(os.path.join(devsecops_dir, ".git"), ignore_errors=True)
 
-                print(
-                    f"Copying {os.path.join(devsecops_dir, 'pre-commit-hook-implementation.py')} as {os.path.join(hooks_dir, 'pre-commit')}")
-                shutil.copy(
-                    os.path.join(devsecops_dir, "pre-commit-hook-implementation.py"),
-                    os.path.join(hooks_dir, "pre-commit")
-                )
+                if not os.path.exists(os.path.join(hooks_dir, "pre-commit")):
+                    print(
+                        f"Copying {os.path.join(devsecops_dir, 'pre-commit-hook-implementation.py')} as {os.path.join(hooks_dir, 'pre-commit')}")
+                    shutil.copy(
+                        os.path.join(devsecops_dir, "pre-commit-hook-implementation.py"),
+                        os.path.join(hooks_dir, "pre-commit")
+                    )
                 os.chmod(os.path.join(hooks_dir, "pre-commit"), 0o755)
 
-                os.makedirs(devsecops_dir)
+                os.makedirs(devsecops_dir, exist_ok=True)
                 install_gitleaks(os_type=os_type, os_architecture=arch, destination_dir=devsecops_dir)
 
         # Here gitleaks is already installed and can be executed
