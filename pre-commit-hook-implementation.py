@@ -9,6 +9,8 @@ import zipfile
 import tarfile
 
 gitleaks_version = "8.17.0"
+
+
 def get_os_type():
     os_type = platform.system()
     if os_type in ["Linux", "Darwin"]:
@@ -83,10 +85,15 @@ def install_gitleaks(os_type, os_architecture, destination_dir):
 
 
 def main():
-    devsecops_enabled = subprocess.run(["git", "config", "--get", "devsecops.gitleaks.enabled"], stdout=subprocess.PIPE)
-    if not devsecops_enabled:
-        print("WARN: Option 'devsecops.gitleaks.enabled' is not set. Code checking skipped!")
+    devsecops_enabled = subprocess.run(["git", "config", "--get", "devsecops.gitleaks.enabled"],
+                                       stdout=subprocess.PIPE).stdout.decode().strip()
+    if not devsecops_enabled or devsecops_enabled == 'false':
+        print("WARN: Option 'devsecops.gitleaks.enabled' is not set. Code checking skipped. LEAKS ARE POSSIBLE!!!")
+        sys.exit(0)
     else:
+        os_type = get_os_type()
+        print(f"Detected OS type: {os_type}")
+
         git_repo_root = subprocess.run(
             ["git", "rev-parse", "--show-toplevel"],
             capture_output=True,
@@ -99,18 +106,14 @@ def main():
             print(f"Current Git repo root: {git_repo_root}")
 
             hooks_dir = os.path.join(git_repo_root, ".git/hooks")
-            print(f"Local hooks dir: {hooks_dir}")
-
             devsecops_dir = os.path.join(hooks_dir, "gitleaks-hooks")
-            print(f"Local devsecops dir: {devsecops_dir}")
 
             if not os.path.exists(os.path.join(devsecops_dir, "gitleaks")):
                 # gitleaks wasn't installed for some reasons. Installing block
                 print(
                     f"There is no 'gitleaks' installed (no file: {os.path.join(devsecops_dir, 'gitleaks')}). Installing...")
-                os_type = get_os_type()
+
                 arch = platform.machine()
-                print(f"Detected OS type: {os_type}")
                 print(f"Detected Architecture type: {arch}")
 
                 print("Installing git DevSecOps hooks.")
@@ -144,9 +147,10 @@ def main():
 
         # Here gitleaks is already installed and can be executed
         gitleaks_command = f"{os.path.join(devsecops_dir, 'gitleaks')} protect --staged -v"
-        os.system(gitleaks_command)  # ToDo: make system dependent
-
-    print("Done.")
+        exit_code = os.WEXITSTATUS(os.system(gitleaks_command)) if os_type != "Windows" else os.system(gitleaks_command)
+        if exit_code != 0:
+            print(f"WARN: Non zero exit-code! Exit-code: {exit_code}")
+        sys.exit(exit_code)
 
 if __name__ == '__main__':
     main()
