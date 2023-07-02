@@ -3,7 +3,6 @@
 #### На вашій системі повинні бути встановлені:
 - cURL
 - python3
-- pip
 - git
 
 Для прикладу, аби встановити ці залежності на Linux або MacOS, варто виконати:
@@ -49,7 +48,6 @@ curl -sL https://raw.githubusercontent.com/TheTopDog1/gitleaks-hooks/main/pre-co
 Увага, перед виконанням команди, варто переконатись, що на хості присунті наступні пакети:
 - cURL
 - python3
-- pip
 - git
 
 <br>
