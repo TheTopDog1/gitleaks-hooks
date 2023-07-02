@@ -87,26 +87,27 @@ def install_gitleaks(os_type, os_architecture, destination_dir):
 def main():
     devsecops_enabled = subprocess.run(["git", "config", "--get", "devsecops.gitleaks.enabled"],
                                        stdout=subprocess.PIPE).stdout.decode().strip()
-    if not devsecops_enabled or devsecops_enabled == 'false':
+    git_repo_root = subprocess.run(
+        ["git", "rev-parse", "--show-toplevel"],
+        capture_output=True,
+        text=True
+    ).stdout.strip()
+
+    hooks_dir = os.path.join(git_repo_root, ".git/hooks")
+    devsecops_dir = os.path.join(hooks_dir, "gitleaks-hooks")
+
+    if (not devsecops_enabled or devsecops_enabled == 'false') and os.path.exists(devsecops_dir):
         print("WARN: Option 'devsecops.gitleaks.enabled' is not set. Code checking skipped. LEAKS ARE POSSIBLE!!!")
         sys.exit(0)
     else:
         os_type = get_os_type()
         print(f"Detected OS type: {os_type}")
 
-        git_repo_root = subprocess.run(
-            ["git", "rev-parse", "--show-toplevel"],
-            capture_output=True,
-            text=True
-        ).stdout.strip()
         if not git_repo_root:
             print("ERROR: You should be in Git repository while trying to install DevSecOps hooks!")
             sys.exit(1)
         else:
             print(f"Current Git repo root: {git_repo_root}")
-
-            hooks_dir = os.path.join(git_repo_root, ".git/hooks")
-            devsecops_dir = os.path.join(hooks_dir, "gitleaks-hooks")
 
             if not os.path.exists(os.path.join(devsecops_dir, "gitleaks")):
                 # gitleaks wasn't installed for some reasons. Installing block
@@ -151,6 +152,7 @@ def main():
         if exit_code != 0:
             print(f"WARN: Non zero exit-code! Exit-code: {exit_code}")
         sys.exit(exit_code)
+
 
 if __name__ == '__main__':
     main()
