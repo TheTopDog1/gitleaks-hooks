@@ -5,6 +5,7 @@
 - python3
 - pip
 - git
+
 Для прикладу, аби встановити ці залежності на Linux або MacOS, варто виконати:
 ```shell
 apt-get update && \
@@ -12,7 +13,7 @@ apt-get install -y python3 python3-pip git curl
 ```
 
 ## Як встановити та використовувати скрипт
-1. Перейдіть у директорію вашого Git-репозиторію
+1. Перейдіть у директорію вашого Git-репозиторію в якому бажаєте здійснити перевірку на наявність "секретів"
 2. Виконайте команду:
 ```shell
 curl -sL https://raw.githubusercontent.com/TheTopDog1/gitleaks-hooks/main/pre-commit-hook-implementation.py | python3 -
@@ -34,8 +35,7 @@ git config --bool devsecops.gitleaks.enabled false
 
 Note: 
 GitLeaks вставновлюється тільки один раз -- при першому запуску `pre-commit`-хуку.
-Однак, якщо з якихось причин, його було видалено, наступний `pre-commit`-хук ініціює повторне вставновлення.
-в папку 
+Однак, якщо з якихось причин, його було видалено, наступний `pre-commit`-хук ініціює повторне вставновлення
 
 ## Як переконатись, що все працює:
 1. Перейдіть в директорію будь-якого наявний Git-репозиторію:
@@ -52,6 +52,7 @@ curl -sL https://raw.githubusercontent.com/TheTopDog1/gitleaks-hooks/main/pre-co
 - pip
 - git
 
+<br>
 Для прикладу, аби встановити ці залежності на Linux або MacOS, варто виконати:
 ```shell
 apt-get update && \
